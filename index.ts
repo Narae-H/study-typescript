@@ -92,3 +92,82 @@ console.log( 내함수3(3) ); // 가능
 function 내함수4(x: number | undefined): void { 
   console.log( x * 2 ); 
 } 
+
+// ------- 함수에 타입 지정하는 법 & void 타입 -------
+// 작명방식: type은 작명시 대문자로 시작 & 뒤에 Type을 붙이기도 함
+// type 키워드는 재정의 불가능
+type Animal = string | number | undefined;
+let 동물: Animal;
+
+// Object 자료형
+// const로 변수 생성하면 절대 변경 불가능.
+// but, const로 생성된 변수에 Object 안의 item 변경은 가능.
+const 출생지역 = { region: 'seoul'};
+출생지역.region = 'busan';
+
+// readonly" ts에서는 object 자료형 안의 아이템도 변경 불가능하게 만들 수 있음.
+type Girlfriend = {
+  readonly name : string,
+}
+
+let 여친 :Girlfriend = {
+  name : '엠버'
+}
+
+// 여친.name = '유라' // readonly라서 에러남 => but, js 파일로 바꿔주고 실행은 가능함. ts 에디터에서만 잡아줌.
+
+// 선택 사항: '?'
+type Girlfriend2 = {
+  name? : string,
+}
+type Girlfriend3 = {
+  name : string | undefined,
+}
+
+// type변수도 당연히 union type으로 합치기 가능
+// 1) union 으로 합치기
+type Name = string;
+type Age = number;
+type NewOne = Name | Age; 
+
+// 2) & 연산자로 object 타입합치기 => object extend
+type PositionX = { x: number };
+type PositionY = { y: number };
+type XandY = PositionX & PositionY
+let 좌표 :XandY = { x : 1, y : 2 }
+
+
+// ------- Literal Types로 만드는 const 변수 유사품 -------
+// Literal: 좀 더 엄격하게 지정. 들어올 수 있는 값을 미리 지정
+let 이름9: 123; // 앞으로 이름에는 123이라는 타입만 들어올 수 있음. 123이라는 값이 아님!
+//이름9 = 456; // 에러
+
+let 테스트: '가' | '나';
+
+function 함수9(a: 'hello'): 1 | 0 {
+  return 0;
+}
+
+var 자료 = {
+  name: 'kim'
+} as const // 이 오브젝트 타입을 만들때 
+function 내함수(a: 'kim') {
+
+}
+
+내함수(자료.name);
+
+// ------- 함수와 methods에 type alias 지정하는 법 -------
+// 1. 함수 타입지정
+type 함수타입 = (a: string) => number; // string 타입의 파라미터를 넣고 number 타입의 리턴을 받음.
+
+// 2. 함수표현식에서만 type alias 사용가능
+let 함수100: 함수타입 = function (a) {
+  return 0;
+}
+
+// 함수 선언식
+// function 함수(){ }
+
+// 함수 표현식
+// let 함수이름: 함수타입 = function() {} 
