@@ -171,3 +171,21 @@ let 함수100: 함수타입 = function (a) {
 
 // 함수 표현식
 // let 함수이름: 함수타입 = function() {} 
+
+
+// Object안에있는 함수의 타입지정
+// 콜백함수
+type 회원정보타입 = {
+  name: string,
+  function(a: number):number{  }
+}
+
+let 회원정보 = {
+  name: 'kim',
+  plusOne(a: number):number{
+    return a+1;
+  }
+  changeName: () => {}
+}
+
+회원정보.plusOne(1);
