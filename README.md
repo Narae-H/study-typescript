@@ -107,76 +107,196 @@ console.log( 5 - '3' ); // 2
  }
 }
 ```
- - 참고: [tsconfing 전체](https://www.typescriptlang.org/tsconfig/)
+<sup>* 참고: [tsconfing 설정 값 전체보기](https://www.typescriptlang.org/tsconfig/)<sup>
 
 <br/>
 <br/>
 
-# 변수 만들 때 타입 지정하는 방법
-- 타입으로 쓸 수 있는 것들: string, number, boolean, bigint, null, undefined,[], {} 등.
+# 타입 선언
+타입으로 쓸 수 있는 것들: string, number, boolean, bigint, null, undefined,[], {} 등.
 
+## 타입 지정 방법
+1. 변수/함수 `옆`에 바로 선언
+  ```typescript
+  let 사람: string = 'kim';
+  ```
+
+2. Type Alias: `type` 키워드를 사용하여 타입 선언 후에 선언된 타입을 사용
+  ```typescript
+  type Person = string;
+  let 사람: Person = 'kim';
+  ```
+
+3. interface: `interface` 키워드를 사용하여 타입 선언 후에 선언된 타입을 사용 (object에서만 사용 가능)
+  ```typescript
+  interface Person {
+    name: string;
+  }
+
+  let person: Person = {
+    name: 'John'
+  };
+  ```
+<br/>
+
+## 사용법
+### 기본타입
 ```typescript
-// 1. 타입 예시
-// 1) string 타입
-let 이름11: string = 'kim'
+// 1) 바로 옆
+let 이름1: string = 'kim';
 
-// 2) array 타입
-let 이름12: string[] = ['kim', 'park']
-// 2) array 타입 tuple: array 자료 안에 순서를 포함해서 어떤 자료가 들어올지 지정하고 싶을 때
+// 2) Type alias: 사용할 수는 있으나 굳이 쓸 필요 X. 코드만 더 길어질뿐 이득이 없음.
+type Name = string;
+let 이름2: Name = 'kim';
+```
+
+### array 타입
+``` typescript
+// 1) 바로 옆
+let 이름1: string[] = ['kim', 'park']
+
+// 2) Type alias
+type Name = number[];
+let 이름2: Name = ['kim', 'park'];
+
+// 3) tuple: array 자료 안에 순서를 포함해서 어떤 자료가 들어올지 지정하고 싶을 때
 type Member = [number, boolean];
 let john: Member = [100, false];
+```
 
-// 3) object 타입
-let 나이13: { age: number } = { age: 12 } 
-// 3) Type Alias: object 타입 정의도 변수로 담는 것 가능
-type MyObject13 = {
-  name?: string,
-  age  : number
+### object 타입
+```typescript
+// 1) 바로 옆
+let 사람1: { name: string, age: number } = { name: "kim", age: 12 } 
+
+// 2) Type alias
+type Person = {
+  name: string,
+  age : number
 }
-let 철수13: MyObject13 = { 
+let 사람2: Person = { 
   name: 'kim',
-  age : 50
+  age : 12
 }
-// 3) Index signature: object 안의 타입 한번에 지정
+
+// 3) Index signature: object 안의 타입같은 경우 한번에 지정
 type MyObject = {
   [key: string]: number,
 }
-let 철수: MyObject = { 
+let 학생3: MyObject = { 
   age   : 50,
   weight: 100,
 }
 
-// 2. Union Type: 한 변수에 여러가지 타입도 가능
-// 1) string 또는 number
-let 이름21: string | number = 'kim';
+// 4) Interface
+interface PersonInterface {
+  name: string;
+  age: number;
+}
+let 학생4: PersonInterface = {name: "kim", age: 12}
+```
+<sup>* [Type VS Interface](#type-vs-interface)</sup>
 
+### 함수 타입
+```typescript
+// 1) 바로 옆
+// 'x: number'는 'x라는 변수는 number 타입이다' 라는 뜻
+// '() :number'는 '함수의 리턴값이 number 타입이다' 라는 뜻
+function 함수1(x: number): number{
+  return x * 2;
+}
 
-// 3. literal type: 타입도 변수처럼 담아서 사용 가능. 단, 타입을 정의할 때는 변수명 대문자
-type NameType3 = string | number;
-let 이름3: nameType3 = 'kim';
+// 2) Type alias
+type Function = (x: number) => number;
 
-
-// 4. 함수도 타입 지정 가능. 단 정확한 연산을 위해서 narrowing 또는 assertion 문법을 사용해야 함.
-// `x: number`는 x라는 변수는 number 타입이다 라는 뜻
-// `() :number`는 함수의 리턴값이 number 타입이다 라는 뜻
-function 함수명(x: number): number{
-  return x * 2
+let 함수2: Function = function (x) {
+  return x * 2;
 }
 ```
-* [변수에 타입 담아서 쓰는 법 자세히](#type키워드-변수에-타입-담기--readonly)
+<sup>* [함수 타입 선언 자세히](#함수와-methods에-type-alias-지정하는-방법)</sup>
+
+### Union Type
+```typescript
+// 한 변수에 여러가지 타입 지정
+// 1) 바로 옆: string 또는 number
+let 이름1: string | number = 'kim';
+
+// 2) Type alias: number | boolean
+type Name = string | number;
+let 이름2: Name = 'kim';
+```
+
+## Intersaction
+기존 자료형에 속성을 추가하고 싶을때 유용
+```typescript
+type Animal = { 
+  name :string 
+} 
+type Cat = Animal & { legs: number }
+```
+주의점: 같은 key값으로 생성할 경우
+```typescript
+type Animal = { 
+  name :string 
+} 
+// Cat 타입의 name은 string이면서도 number 타입이여야 함. => 그런 타입은 존재X(never)
+type Cat = Animal & { name: number }
+
+let 야옹이: Cat = {name: '미야옹'} // error: name의 타입이 string & number 를 만족하지 못하므로  
+```
 <br/>
 <br/>
+
+# Interface
+Object 자료형에서 타입 지정할 때 쓰이는 방법 중 하나로 type 키워드와 유사하나 좀 더 유연(재정의 가능, 쉽게 변경 가능). 
+```typescript
+// interface 이름은 대문자로 시작
+interface Square { 
+  color: string; 
+  width: number; 
+} 
+
+let 네모: Square = { color : 'red', width : 100 } 
+```
+
+## Extends
+기존 interface에 속성을 추가하고 싶을때 유용
+```typescript
+interface Person {
+  name: string
+}
+// Teacher interface는 Person의 속성도 갖고 Teacher에서 정의된 속성도 갖음.
+interface Teacher extends Person {
+  age: number
+}
+
+let 사람: Person = {name: "kim"};
+let 선생님: Teacher = {name: "park", age: 30};
+```
+
+## Type VS Interface
+| **특징**           | **interface**                                   | **type**                             |
+|--------------------|-------------------------------------------------|--------------------------------------|
+| **정의 방식**       | `interface` 키워드를 사용                        | `type` 키워드를 사용                  |
+| **확장 방식**       | `extends`                                       | `&` (intersaction)                   |
+| **활용 방식**       | 객체(Object) 타입을 정의하는 데 주로 사용         | 일반 변수나 함수를 정의하는데 주로 사용  |
+| **중복 정의**       | 같은 이름의 `interface`가 여러 번 정의될 수 있음 but, 같은 key값이 들어오는건 안됨.  | 같은 이름의 `type`은 중복 정의가 불가능함|
+| **유니온, 인터섹션 타입**| 유니온 타입과 인터섹션 타입을 사용할 수 없음   | 유니온(`\|`) 및 인터섹션(`&`) 타입을 사용할 수 있음|
+
+<br/>
+<br/>
+
 
 # 자료형 (Data Types)
 ## `Explicit Type` VS `Implicit Type`
 - `Explicit Type`: TypeScript는 타입지정을 하기 위한 언어로 타입 명시
-```typescript
-let firstName: string = "Dylan";
-```
+  ```typescript
+  let firstName: string = "Dylan";
+  ```
 - `Implicit Type`: However, 꼭 타입지정을 할 필요는 없음. 왜냐면 변수 생성할 때의 값에 따라 알아서 암묵적으로 타입지정이 되니깐.
-```typescript
-let firstName = "Dylan"; // 알아서 타입이 string으로 지정
-```
+  ```typescript
+  let firstName = "Dylan"; // 알아서 타입이 string으로 지정
+  ```
 
 ## 종류
 ### 1. Simple Types / Primitives Types
@@ -330,49 +450,267 @@ function 내함수32(x: number | undefined) :void {
 } 
 ```
 ## 함수와 methods에 type alias 지정하는 방법
-여기서부터!!!
-"함수와 methods에 type alias 지정하는 법" 부터 수업들으면 됨. 
+### 함수 타입지정 및 함수 만들기
+1) `함수 타입지정`: 함수 타입은 반드시 ()=>{} 형태로 지정해야함.
+2) `함수 생성`: 함수 표현식<sup>1)</sup>에서만 type alias 사용가능
+  ><details>
+  ><summary><sup>1) 함수 표현식이란?</sup></summary>
+  >
+  >**함수 표현식**
+  >함수를 변수에 저장하는 방식. `let 함수이름: 함수타입 = function() {}`
+  >
+  >**함수 선언식**
+  >function키워드를 사용하는 방식. `function 함수(){ }`
+  >
+  ></details>
 
+  ```typescript
+  // 1) 함수타입지정: string 타입의 파라미터를 넣고, number 타입으로 리턴
+  type 함수타입 = (x : number, y : number ) => number
 
+  // 2) 함수생성
+  let 함수: 함수타입 = function(x, y){
+    return x + y
+  }
+  ```
+
+### Object안에 있는 methods에 타입지정
+- object의 타입 지정할때 methods에는 함수 타입지정 방법 사용하여 타입 지정 가능
+<br/>
+
+  **- 예시1)** object의 타입 지정 
+  ```typescript
+  // 1. 타입지정
+  type 회원정보타입 = {
+    name: string,
+    age: number,
+    plusOne: (x:number) => number,
+    changeName: () => void
+  }
+
+  // 2. 지정한 타입을 이용하여 object 생성
+  let 회원정보: 회원정보타입 = {
+    name : 'kim',
+    age : 30,
+    plusOne (x){
+      return x + 1
+    },
+    changeName () {
+      console.log('안녕')
+    }
+  }
+  회원정보.plusOne(1);
+  회원정보.changeName();
+  ```
+  <br/>
+
+  **- 예시2)** 콜백함수 타입지정
+  ```typescript
+  type Fun1Type = (x: string) => string;
+  type Fun2Type = (x: string) => number;
+  type Fun = (
+    x: string, 
+    fun1: Fun1Type,
+    fun2: Fun2Type
+  ) => void
+
+  let cutZero: Fun1Type = (param) => {
+    let result = param.replace(/^0+/, '');
+    return result;
+  }
+
+  let removeDash: Fun2Type = (param) => {
+    let result = param.replace(/-/g, '');
+    return parseInt(result);
+  }
+
+  let 콜백함수타입테스트: Fun = (param, fun1, fun2) => {
+    let result = fun1(param);
+    let result2 = fun2(result);
+    console.log( result2 );
+  }
+
+  콜백함수타입테스트('010-1111-2222', cutZero, removeDash); // 1011112222
+  ```
+### default paramenter
+- 파라미터에 값을 입력 안하면 자동으로 할당하는 기능
+  ```typescript
+  class Person {
+    name;
+    age;
+    constructor ( a = 'kim' ){
+      this.name = a;
+      this.age = 20;
+    }
+  }
+  ```
+<br/>
+<br/>
+
+# 클래스 (Class)
+- 비슷한 객체(object)를 만들기 위한 템플릿
+  ```typescript
+  class Obj {
+    construnctor() {
+    }
+  }
+  ```
+
+## 클래스의 타입 지정
+### 클래스의 속성 타입 지정
+- JavaScript와 달리 constructor()에서 attributies를 쓰고 싶다면 constructor() 밖에서 선언 먼저 해줘야 함.
+  ```typescript
+  class Person {
+    // 1. 선언 및 타입지정: constructor() 밖에서 fields 값 선언 
+    name: string;
+    age: number;
+
+    // 2. constructor()의 파라미터 타입 지정
+    constructor (n: string, a: number){ 
+      // 3. 값 할당
+      this.name = n; 
+      this.age = a;
+    }
+  }
+  ```
+
+### 클래스의 메소드 타입 지정
+- 클래스의 메소드 타입지정은 함수와 동일한 방식으로 선언
+```typescript
+class Person {
+  
+  add(숫자: number): void{
+    console.log(숫자 + 1)
+  }
+}
+```
 <br/>
 <br/>
 
 # Narrowing & Assertion
 ## Narrowing
-- union type 등 때문에 어떤 변수가 타입이 아직 불확실하다면, narrowing(타입 좁히기)을 해줘서 타입을 확실하게 해줘야 함. 
+- union type 등 때문에 어떤 변수가 타입이 아직 불확실하다면, `narrowing(타입 좁히기)`을 해줘서 타입을 확실하게 해줘야 함. 
 - Narrowing으로 판정해주는 문법들 => 그냥 현재 변수의 타입이 뭔지 특정지을 수 있기만 하면 다 가능.
 
-```typescript
-// 타입 좁히기(narrowing)
-// 1) typeof 변수
-function 내함수(x :number | string): number{
-  if(typeof x === 'number') { // 가끔 이걸 "defensive 하게 코딩한다"라고 함.
-    return x + 1  
-  } else {
-    return 0;
+### 방법1: typeof
+- `typeof [변수]` => [변수]의 타입을 리턴
+
+  ```typescript
+  // typeof 변수
+  function 내함수(x :number | string): number{
+    if(typeof x === 'number') { // 가끔 이걸 "defensive 하게 코딩한다"라고 함.
+      return x + 1  
+    } else {
+      return 0;
+    }
   }
-}
+  ```
 
-// 2) 인스턴스 instanceof 부모
-if( (x instanceof Number)) {
-  console.log("Numer 인스턴스");
-}
-```
+### 방법2: instanceof
+- `[object] instanceof [클래스]` => '[object]가 [클래스]의 자식(instance)이냐'를 확인. 맞다면 true 리턴
+  ```typescript
+  // [object] instanceof [클래스] => 
+  if( (x instanceof Number)) {
+    console.log("Numer 인스턴스");
+  }
+  ```
+<br/>
 
-## Assertion
+- TypeScript에서 `HTML element`를 접근할때 많이 쓰임
+  ```html
+  <!-- HTML -->
+  <h4 id="title">안녕하세요</h4>
+  <a id="link" href="naver.com">링크</a>
+  <button id="button">버튼</button>
+  <img id="image" src="test.jpg">
+  ```
+
+  ```typescript
+  /* TypeScript */
+  let 제목 = document.querySelector("#title");
+  제목.innerHTML = '반가워요'; // Error: 제목 이라는 타입이 union타입(element|null) 이므로 string 넣는것 불가능
+  
+  // 해결방법: Type narrowing을 하자!
+  // 방법1) null 체크
+  let 제목1 = document.querySelector("#title");
+  if( 제목1 != null ){
+    제목1.innerHTML = '반가워요(null check)'; // Success!
+  }
+
+  // 방법2) instanceof 사용 (가장 많이 사용!)
+  let 제목2 = document.querySelector("#title");
+  if( 제목2 instanceof Element) {
+    제목2.innerHTML = '반가워요(instanceof)'; // Success!
+  }
+
+  // 방법3) selector로 찾은 키워드를 as 키워드를 이용하여 Element라는 타입이라고 사기침
+  // null이 들어와도 Element라고 강력하게 사기침 => 즉, as는 버그 가능성이 매우 높으므로 되도록 쓰지말자.
+  let 제목3 = document.querySelector("#title") as Element; 
+  제목3.innerHTML = '반가워요(Type assertion)'; // Success!
+
+  // 방법4) '?' 사용해서 제목4가 null이 아닐 때만 if문 실행하도록 함. (null일때는 undefined 리턴)
+  let 제목4 = document.querySelector("#title"); 
+  if( 제목4?.innerHTML != undefined) {
+    제목4.innerHTML = '반가워요(?.)'; // Success!
+  }
+  ```
+<br/>
+
+- instanceof를 쓸때는 `상세한 DOM 이름(클래스이름)`을 쓰자. 해당 요소의 기본 attributies 접근 시 에러방지.  
+  
+  **- DOM element 종류**
+  | **DOM 요소**           | **태그**       | **설명**                  |
+  |------------------------|---------------|----------------------------|
+  | `HTMLAnchorElement`    | `<a>`         | 링크 태그                  |
+  | `HTMLImageElement`     | `<img>`       | 이미지 태그                |
+  | `HTMLButtonElement`    | `<button>`    | 버튼 태그                  |
+  | `HTMLInputElement`     | `<input>`     | 사용자 입력 태그           |
+  | `HTMLParagraphElement` | `<p>`         | 문단 태그                  |
+  | `HTMLHeadingElement`   | `<h1>`~`<h6>` | 제목 태그                  |
+  | `HTMLDivElement`       | `<div>`       | 블록/구역(division) 태그   |
+  | `HTMLSpanElement`      | `<span>`      | 인라인 요소 블록 태그       |
+  | `HTMLTableElement`     | `<table>`     | 표(table) 태그             |
+  | `HTMLCanvasElement`    | `<canvas>`    | 그래픽을 렌더링 태그        |
+  <sup>* [HTML DOM interfaces](https://developer.mozilla.org/en-US/docs/Web/API/HTML_DOM_API)</sup>
+  
+  **- DOM element 사용예시**
+  ```html
+  <!-- HTML -->
+  <a id="link" href="naver.com">링크</a>
+  <img id="image" src="test.jpg">
+  ```
+
+  ```typescript
+  /* TypeScript */
+
+  // 1) HTMLAnchorElement
+  let 링크 = document.querySelector("#link");
+  if( 링크 instanceof HTMLAnchorElement) {
+    링크.href = "https://google.com";
+  }
+
+  // 2) HTMLImageElement
+  let 이미지 = document.querySelector("#image");
+  if( 이미지 instanceof HTMLImageElement) {
+    이미지.src='new.jpg';
+  }
+  ```
+
+## Assertion (as)
 - `as`를 이용하여 타입을 잠깐 덮어쓰기. 잠깐 엄격한 타입체크 기능을 끄겠다는 것과 동일.
-- `as` 문법 사용하는 경우
-  1) union type 같은 복잡한 타입을 하나의 정확한 타입으로 줄이는 역할(narrowing) (number 타입을 string으로 바꿔 달라고 하면 에러남)
-  2) 왜 타입에러가 나는지 정말 모르겠는 상황에 임시 에러해결 방안으로 사용
-  3) 무슨 타입이 들어올지 확신 할 때 임시로 사용. => 자주 사용하진 말자. 왜냐면 버그를 못잡아 주기때문에
 
-```typescript
-// 변수명 as 원하는타입: "해당 변수를 잠깐 원하는 타입으로 생각해주세요" 라는 뜻.
-function 내함수(x :number | string){ 
-    return (x as number) + 1 
-}
-console.log( 내함수(123) )
-```
+### `as` 문법을을 사용하는 경우
+1) union type 같은 `복잡한 타입을 하나의 정확한 타입으로 줄이는 역할(narrowing)` (number 타입을 string으로 바꿔 달라고 하면 에러남)
+2) 왜 타입에러가 나는지 정말 모르겠는 상황에 `임시 에러해결 방안`으로 사용
+3) 무슨 타입이 들어올지 `확신 할 때 임시`로 사용. => 자주 사용하진 말자. 왜냐면 버그를 못잡아 주기때문에
+
+  ```typescript
+  // 변수명 as 원하는타입: "해당 변수를 잠깐 원하는 타입으로 생각해주세요" 라는 뜻.
+  function 내함수(x :number | string){ 
+      return (x as number) + 1 
+  }
+  console.log( 내함수(123) )
+  ```
 <br/>
 <br/>
 
@@ -380,7 +718,7 @@ console.log( 내함수(123) )
 - 타입이 너무 길고 복잡하면 또는 나중에 또 사용하고 싶으면 `type`이라는 변수타입에 타입 담아서 쓰는 것 가능
 
 ## `type` 사용 규칙
-- type은 작명시 대문자로 시작
+- type은 작명시 `대문자로 시작`
 - 일반 자바스크립트 변수랑 차별점을 뒤기 위해 뒤에 Type을 붙이기도 함
 
 ## 사용방법
@@ -422,8 +760,8 @@ let 좌표 :XandY = { x : 1, y : 2 }
 <br/>
 
 # Readonly
-- 값이 한번 설정하면 재할당 할 수 없게 함.
-- const 변수와 비슷하나 ts에서 좀 더 엄격하게 지정 가능.
+- 값이 한번 할당되면 `재할당 불가능`하도록 설정.
+- const 변수와 비슷하나 TypeScript에서 좀 더 엄격하게 지정 가능.
 
 ## const의 문제점
 - object가 할당되었을 경우는 object 내부 item은 수정가능
@@ -436,17 +774,17 @@ let 좌표 :XandY = { x : 1, y : 2 }
 - TypeScript에서만 사용가능한 `readonly`를 쓰면, object 자료형 안의 아이템도 변경 불가능하게 만들 수 있음.
 - But, 이건 TypeScript 에디터에서만 잡아주는거지, JavaScript로 바꾸고 실행은 문제 없음.
 
-```typescript
-type Girlfriend = {
-  readonly name : string,
-}
+  ```typescript
+  type Girlfriend = {
+    readonly name : string,
+  }
 
-let 여친 :Girlfriend = {
-  name : '엠버'
-}
+  let 여친 :Girlfriend = {
+    name : '엠버'
+  }
 
-여친.name = '유라' // readonly라서 에러남
-```
+  여친.name = '유라' // readonly라서 에러남
+  ```
 <br/>
 <br/>
 
@@ -463,13 +801,13 @@ let 방향: 'left' | 'right';
 // 2) 함수에서의 사용
 // a는 'hello'라는 타입만 가질 수 있고
 // 리턴 타입은 1, 0, -1만 가능 
-function 함수(a : 'hello') : 1 | 0 | -1 {
+function 함수(a: 'hello'): 1 | 0 | -1 {
   return 1 
 }
 ```
 
 ## as const
-- 일반 `as 타입` 문법과는 다름
+- 일반 as 타입 문법과는 다름
 - 타입을 object의 value로 바꿔줌 (아래에서는 타입을 'kim'으로 바꿔줌)
 - object안에 있는 모든 속성을 readonly로 바꿔줌.
 
