@@ -224,3 +224,222 @@ let objInterfaceTest = {
         return a - b;
     }
 };
+class Car1 {
+    constructor(color) {
+        this.color = color;
+    }
+}
+let nCar = new Car1('red');
+console.log("typeof: " + typeof nCar);
+console.log("instanceof: " + (nCar instanceof Object));
+console.log("instanceof: " + (nCar instanceof Car1));
+console.log("in(literal type): " + ('wheel' in nCar));
+console.log("in(generic type): " + ('color' in nCar));
+let nArray = [1, 2, 3];
+console.log("내장객체 테스트");
+console.log(nArray);
+console.log("typeof: " + typeof nArray);
+console.log("instanceof: " + (nArray instanceof Array));
+console.log("in(generic type): " + ('pop' in nArray));
+console.log("in(generic type): " + ('pop1' in nArray));
+// ------- public, private 쓰는거 보니까 타입스크립트 귀여운편 & protected & static-------
+// 객체 지향 언어 같은 문법 사용가능: public, private
+class User9 {
+    constructor(name) {
+        this.name = name;
+    }
+}
+// public(default 값): 해당 속성은 자유롭게 가져다 쓰고 수정도 가능
+// private: 수정 불가능. 클래스 안에서만 수정 가능.
+// class 밖에서 private 붙은거 수정하려면?
+// 직접 변수에 접근 하지 않고, prototype으로 setter() 만들어서 setter()로 접근
+// protected: extends 된 클래스에서도 수정 가능. (클래스끼리 공유하고 싶음.)
+class User {
+    constructor() {
+        this.x = 10;
+    }
+}
+class NewUser extends User {
+    doThis() {
+        this.x = 20;
+    }
+}
+// static: 부모만 사용 가능하고 해당 클래스로 생성된 자식들은 물려받지 않는 속성. 직접 접근만 가능함.
+class User1 {
+    constructor() {
+        this.y = 20;
+    }
+}
+User1.x = 10;
+let john1 = new User1();
+// console.log( john1.x ) //불가능
+console.log(User1.x); //가능
+// static + private/protected/public 가능
+class User123 {
+    constructor() {
+        // User123에서 자유롭게 수정가능
+        // extends된 클래스에서도 수정가능
+        // USer123으로 생성된 객체에서는 접근 불가능. => 접근하고 싶다면 prototype 생성필요.
+        this.z = 30;
+    }
+}
+// User123 클래스 내부에서만 사용가능. extends로 생성된 클래스에서도 접근 불가능. User123으로 생성된 객체도 접근 불가능.
+// static이 붙어있으므로 prototype 생성해도 외부에서는 수정 불가능.
+User123.x = 10;
+// public은 디폴트 값. 언제 어디서든 접근 가능.
+// but, static이 있으므로 자식 통해서는 접근 불가능하고 부모 객체를 통한 접근만 가능 ex) User123.y
+User123.y = 20;
+class User124 {
+    constructor() {
+        this.test = 123;
+    }
+    static addOne(num) {
+        User124.x = User124.x + num;
+    }
+    static printX() {
+        console.log(User124.x);
+    }
+    fun() {
+        console.log("123");
+    }
+}
+User124.x = 10;
+User124.y = 20;
+User124.addOne(3); //이렇게 하면 x가 3 더해져야함
+User124.addOne(4); //이렇게 하면 x가 4 더해져야함
+User124.printX(); //이렇게 하면 콘솔창에 x값이 출력되어야함
+class Square125 {
+    constructor(x, y, color) {
+        this.x = x;
+        this.y = y;
+        this.color = color;
+    }
+    draw() {
+        var _a;
+        let innerDiv = document.createElement('div');
+        innerDiv.style.position = "relative";
+        innerDiv.style.top = (Math.random() * 400) + "px";
+        innerDiv.style.left = (Math.random() * 400) + "px";
+        innerDiv.style.width = this.x + "px";
+        innerDiv.style.height = this.y + "px";
+        innerDiv.style.background = this.color;
+        (_a = document.querySelector('body')) === null || _a === void 0 ? void 0 : _a.appendChild(innerDiv);
+    }
+}
+let 네모125 = new Square125(30, 30, 'red');
+네모125.draw();
+네모125.draw();
+네모125.draw();
+네모125.draw();
+var InterfaceDog;
+(function (InterfaceDog) {
+    ;
+})(InterfaceDog || (InterfaceDog = {}));
+let dog1 = 'bark';
+let dog2 = { name: 'paw' };
+// ---------------타입을 파라미터로 입력하는 Generic---------------------
+// 함수 쓸 때 generic 함수만들기(파라마터로 타입을 입력하는 함수)
+function 함수22(x) {
+    return x[0];
+}
+let a = 함수22(4);
+// 1. Generic 함수
+// 2. <Type> 받기
+// 3. extends로 제한두기: 내장 객체 뿐만아니라, 커스텀 타입/인터페이스도 가능.
+function 함수33(a, b) {
+    console.log(a, b);
+}
+함수33('안녕', 123);
+function 함수44(x) {
+    return x.length;
+}
+let a44 = 함수44('hello'); //가능
+// let a45 = 함수44<number>(1234) //에러남
+class Person123 {
+    constructor(name) {
+        this.name = name;
+    }
+}
+let person = new Person123('Kim');
+console.log(person);
+// 숙제
+function getLength(a) {
+    console.log("Length: " + a.length);
+}
+getLength('hello');
+getLength(['kim', 'park']);
+let data = '{"name" : "dog", "age" : 1 }';
+function toObject(str) {
+    return JSON.parse(str);
+}
+console.log(toObject(data));
+class Person11 {
+    constructor(a) {
+        this.name = a;
+    }
+}
+let a11 = new Person11('어쩌구');
+a11.name; //any 타입이 되었넹 
+// --------------- React + Typescript ---------------------
+// JSX 문법을 쓰는 파일은 .tsx로 만듬.
+// componet 타입지정: 파라미터, 리턴타입
+// 1. 리턴 ex) JSX.Element
+// 2. props: object형식으로 타입지정. 왜냐면 props는 object 형식으로 오니깐
+// state
+// 1. 일반적으로는 알아서 타입 지정됨.
+// 2. 타입을 2개 이상 넣고 싶다면? => generic 문법 사용
+// redux
+// 변수, 함수에 타입지정
+// --------------- array: tuple type ---------------------
+// 숙제1
+let 최근음식 = ['커피', 3000, true];
+// 숙제2
+let arr22 = ['동서녹차', 4000, true, false, true, true, false, true];
+// 숙제3
+function 함수333(...rest) {
+}
+함수333('a', true, 6, 3, '1', 4);
+// 숙제4
+function filter(...rest) {
+    let strArr = [];
+    let numArr = [];
+    rest.forEach((item) => {
+        if (typeof item === "string") {
+            strArr.push(item);
+        }
+        else {
+            numArr.push(item);
+        }
+    });
+    let returnArr = [[], []];
+    returnArr[0] = strArr;
+    returnArr[1] = numArr;
+    return returnArr;
+}
+console.log(filter('b', 5, 6, 8, 'a'));
+let obj123 = {
+    model: 'k5',
+    brand: 'kia',
+    price: 6000,
+    year: 2030,
+    date: '6월',
+    percent: '5%',
+    dealer: '김차장',
+};
+let obj124 = {
+    'font-size': 10,
+    'secondary': {
+        'font-size': 12,
+        'third': {
+            'font-size': 14
+        }
+    }
+};
+let a2 = 'name';
+let nBus = {
+    color: 'red',
+    model: 'k3',
+    price: '1억'
+};
+let age1;
+let age2;

@@ -419,3 +419,433 @@ let objInterfaceTest: ObjInter = {
   }
 }
 
+type CarT = {
+  wheel : '4개',
+  color : string
+}
+type BikeT = {
+  wheel : '2개',
+  color : string
+}
+
+class Car1 implements CarT{
+  wheel: '4개';
+  color: string;
+
+  constructor(color: string) {
+    this.color = color;
+  }
+}
+
+let nCar = new Car1('red');
+console.log( "typeof: " + typeof nCar);
+console.log( "instanceof: " + (nCar instanceof Object));
+console.log( "instanceof: " + (nCar instanceof Car1));
+console.log( "in(literal type): " + ('wheel' in nCar));
+console.log( "in(generic type): " + ('color' in nCar));
+
+let nArray = [1, 2, 3];
+console.log("내장객체 테스트");
+console.log( nArray);
+console.log( "typeof: " + typeof nArray);
+console.log( "instanceof: " + (nArray instanceof Array));
+console.log( "in(generic type): " + ('pop' in nArray));
+console.log( "in(generic type): " + ('pop1' in nArray));
+
+
+// ------- public, private 쓰는거 보니까 타입스크립트 귀여운편 & protected & static-------
+// 객체 지향 언어 같은 문법 사용가능: public, private
+class User9 {
+  public name: string;
+  constructor(name: string) {
+    this.name = name;
+  }
+}
+
+// public(default 값): 해당 속성은 자유롭게 가져다 쓰고 수정도 가능
+// private: 수정 불가능. 클래스 안에서만 수정 가능.
+
+// class 밖에서 private 붙은거 수정하려면?
+// 직접 변수에 접근 하지 않고, prototype으로 setter() 만들어서 setter()로 접근
+
+
+
+// protected: extends 된 클래스에서도 수정 가능. (클래스끼리 공유하고 싶음.)
+class User {
+  protected x = 10;
+}
+
+class NewUser extends User {
+  doThis(){
+    this.x = 20;
+  }
+}
+
+// static: 부모만 사용 가능하고 해당 클래스로 생성된 자식들은 물려받지 않는 속성. 직접 접근만 가능함.
+class User1 {
+  static x = 10;
+  y = 20;
+}
+
+let john1 = new User1();
+// console.log( john1.x ) //불가능
+console.log( User1.x ) //가능
+
+// static + private/protected/public 가능
+
+
+class User123 {
+  // User123 클래스 내부에서만 사용가능. extends로 생성된 클래스에서도 접근 불가능. User123으로 생성된 객체도 접근 불가능.
+  // static이 붙어있으므로 prototype 생성해도 외부에서는 수정 불가능.
+  private static x = 10; 
+  
+  // public은 디폴트 값. 언제 어디서든 접근 가능.
+  // but, static이 있으므로 자식 통해서는 접근 불가능하고 부모 객체를 통한 접근만 가능 ex) User123.y
+  public static y = 20;
+
+  // User123에서 자유롭게 수정가능
+  // extends된 클래스에서도 수정가능
+  // USer123으로 생성된 객체에서는 접근 불가능. => 접근하고 싶다면 prototype 생성필요.
+  protected z = 30;
+}
+
+class User124 {
+  private static x = 10;
+  public static y = 20;
+  private test = 123;
+
+  static addOne(num: number): void {
+    User124.x = User124.x + num;
+  }
+
+  static printX(): void {
+    console.log(User124.x);
+  }
+
+  fun() {
+    console.log("123");
+  }
+}
+User124.addOne(3) //이렇게 하면 x가 3 더해져야함
+User124.addOne(4) //이렇게 하면 x가 4 더해져야함
+User124.printX()  //이렇게 하면 콘솔창에 x값이 출력되어야함
+
+
+class Square125 {
+  x: number;
+  y: number;
+  color: string;
+  constructor(x: number, y: number, color: string) {
+    this.x = x;
+    this.y = y;
+    this.color = color;
+  }
+
+  draw() {
+    let innerDiv = document.createElement('div');
+    innerDiv.style.position = "relative";
+    innerDiv.style.top = (Math.random()*400) + "px";
+    innerDiv.style.left = (Math.random()*400) + "px";
+    innerDiv.style.width  = this.x + "px";
+    innerDiv.style.height = this.y + "px";
+    innerDiv.style.background = this.color;
+    
+    document.querySelector('body')?.appendChild(innerDiv);
+  }
+}
+
+let 네모125 = new Square125(30, 30, 'red');
+네모125.draw()
+네모125.draw()
+네모125.draw()
+네모125.draw()
+
+// ------- 타입도 import export 해서 씁니다 그리고 namespace -------
+// JavaScript와 동일: <script src=""></script>로 파일 첨부하는게 아니라 export/import하여서 필요한 것만 가져와서 사용
+// 변수/타입 다 export/import 가능.
+
+// namespace
+// 변수명 중복을 없애기 위해서 namespace라는 공간안에 감쌈.
+// namespace 전에는 module이라는 키워드로 썼썼음.
+
+//export 할 수 있는 것: type, interface 등등
+
+// ------- 타입도 import export 해서 씁니다 그리고 namespace -------
+// JavaScript와 동일: <script src=""></script>로 파일 첨부하는게 아니라 export/import하여서 필요한 것만 가져와서 사용
+// 변수/타입 다 export/import 가능.
+// namespace
+// 변수명 중복을 없애기 위해서 namespace라는 공간안에 감쌈.
+// namespace 전에는 module이라는 키워드로 썼썼음.
+//export 할 수 있는 것: type, interface 등등
+
+// // vehicles.ts
+// export type Car = {
+//   wheel : number,
+//   model : string
+// }
+// export interface Bike {
+//   wheel : 2,
+//   model : string
+// }
+
+// // index.ts
+// import {Car, Bike} from './vehicles';
+// let nCar: Car = {wheel: 4, model: 'BMW'};
+
+// // fun.ts
+// export type funT = (obj: object) => void
+
+// // index.ts
+// import {funT} from './fun';
+
+// let fun123: funT = function(obj) {
+//   console.log(obj);
+// }
+
+namespace TypeDog {
+  export type Dog = string;
+
+}
+
+namespace InterfaceDog {
+  export interface Dog { name : string };
+}
+
+let dog1: TypeDog.Dog = 'bark';
+let dog2: InterfaceDog.Dog = { name : 'paw' }
+
+
+// ---------------타입을 파라미터로 입력하는 Generic---------------------
+// 함수 쓸 때 generic 함수만들기(파라마터로 타입을 입력하는 함수)
+function 함수22<T>(x: T):T {
+  return x[0];
+}
+let a = 함수22<number>(4);
+
+// 1. Generic 함수
+// 2. <Type> 받기
+// 3. extends로 제한두기: 내장 객체 뿐만아니라, 커스텀 타입/인터페이스도 가능.
+
+function 함수33<T1, T2> (a: T1, b: T2): void {
+  console.log(a, b);
+}
+
+함수33<string, number>('안녕', 123);
+
+
+interface lengthCheck {
+  length : number
+}
+function 함수44<MyType extends lengthCheck>(x: MyType) {
+  return x.length
+}
+
+let a44 = 함수44<string>('hello')  //가능
+// let a45 = 함수44<number>(1234) //에러남
+
+class Person123<T1> {
+  name: T1;
+  constructor(name: T1) {
+    this.name = name;
+  }
+}
+
+let person = new Person123<string>('Kim');
+console.log( person );
+
+// 숙제
+function getLength<T extends string | any[]> (a: T) {
+  console.log("Length: " + a.length);
+}
+getLength<string>('hello');
+getLength<string[]>(['kim', 'park']);
+
+
+
+interface Animal12 {
+  name : string;
+  age : number; 
+}
+
+let data = '{"name" : "dog", "age" : 1 }'
+
+function toObject<T>(str: string):T{
+  return JSON.parse(str);
+}
+
+console.log( toObject<Animal12>(data) );
+
+
+class Person11<T> {
+  name: T;
+  constructor(a: T){
+    this.name = a;
+  }
+}
+let a11 = new Person11<string>('어쩌구');
+a11.name //any 타입이 되었넹 
+
+
+// --------------- React + Typescript ---------------------
+// JSX 문법을 쓰는 파일은 .tsx로 만듬.
+
+// componet 타입지정: 파라미터, 리턴타입
+// 1. 리턴 ex) JSX.Element
+// 2. props: object형식으로 타입지정. 왜냐면 props는 object 형식으로 오니깐
+
+// state
+// 1. 일반적으로는 알아서 타입 지정됨.
+// 2. 타입을 2개 이상 넣고 싶다면? => generic 문법 사용
+
+// redux
+// 변수, 함수에 타입지정
+
+// --------------- array: tuple type ---------------------
+// 숙제1
+let 최근음식: [string, number, boolean] = ['커피', 3000, true]
+
+// 숙제2
+let arr22: [string, number, ...boolean[]] = ['동서녹차', 4000, true, false, true, true, false, true]
+
+// 숙제3
+function 함수333(...rest: [string, boolean, ...(number|string)[]]){
+}
+함수333('a', true, 6, 3, '1', 4)
+
+// 숙제4
+function filter(...rest: (string|number)[]): [string[], number[]] {
+  let strArr: string[] = [];
+  let numArr: number[] = [];
+  
+  rest.forEach( (item)=> {
+    if( typeof item === "string" ) {
+      strArr.push(item);
+    }else {
+      numArr.push(item);
+    }
+  })
+
+  let returnArr: [string[], number[]] = [[], []] ;
+  returnArr[0] = strArr;
+  returnArr[1] = numArr;
+
+  return returnArr;
+
+}
+console.log( filter('b', 5, 6, 8, 'a')); 
+
+
+// --------------- 외부 파일 이용시 declare & 이상한 특징인 ambient module ---------------------
+// 1. 외부 js파일을 ts파일에서 갖다 쓰는 경우
+// declare: 어디선가 정의한 외부 변수를 재정의하고 싶을 때. type 지정도 가능
+// 타입스크립트 파일에 힌트를 주기위한 키워드로 변환된 .js 파일보면 declare로 정의된건 안보임.
+
+// 2. 외부 ts파일을 ts파일에서 갖다 쓰는 경우
+// 1) import/export 사용 
+// 2) ambient module: ts의 이상한 특징: 모든 ts파일은 글로벌 모듈. import/export 없이도 그냥 사용가능.
+//                    변수 이름 중복을 막기위해서 local 변수를 만들고 싶다면? => export{} 키워드 추가하면 됨.
+//                    로컬 파일에다가 글로벌 변수 만들고 싶으면? => declare global {} 써서 그 안에 정의
+
+
+// --------------- d.ts 파일 이용하기 ---------------------
+// [이름].d.ts
+// 1. 타입정의 보관용 파일, 타입이 너무 많을 때 사용
+//  1) .d.ts는 자동으로 global module이 아니므로 export/import해서 사용
+//  2) "typeRoots: [파일명1, 파일명2]" 설정하면 d.ts파일 글로벌 모듈 만드는 법. 위험할 수 있으니 웬만하면 import/export 하자.
+
+
+// 2. 레퍼런스 용으로도 사용
+// tsconfig.json 파일에 "declaration": true 설정하면 자동으로 d.ts파일 생성 => 수동 수정 X(읽기용 파일)
+
+// 3. 외부라이브러리 쓸때 직접 타입 지정 필요
+// node_modules/@types 에 있는 파일에서 자동으로 타입찾아서 지정해줌.
+
+
+// --------------- object index signatures ---------------------
+// 리터럴입도 가능
+// 키가 숫자 => 가능
+
+// interface: recursive하게 타입 만듬.
+
+// 숙제1
+type ObjT = {
+  [key: string]: string | number;
+}
+
+let obj123: ObjT = {
+  model : 'k5',
+  brand : 'kia',
+  price : 6000,
+  year : 2030,
+  date : '6월',
+  percent : '5%',
+  dealer : '김차장',
+}
+
+// 숙제2
+interface ObjInterface {
+  'font-size' : number;
+  [key: string]: number | ObjInterface;
+}
+
+let obj124: ObjInterface = {
+  'font-size' : 10,
+  'secondary' : {
+    'font-size' : 12,
+    'third' : {
+      'font-size' : 14
+    }
+  }
+}
+
+
+// --------------- object 타입 변환기 만들기 ---------------------
+// 조건부로 타입지정
+
+// keyof: object의 키값을 전부 다 가져와서 union type으로 저장
+type PersonKeys = keyof Person;
+let a2: PersonKeys = 'name';
+
+// 숙제1
+type Bus = {
+  color : string,
+  model : boolean,
+  price : number
+}
+
+type TypeChanger<T> = {
+  [key in keyof T]: string | number;
+}
+type NewType = TypeChanger<Bus>;
+
+let nBus = {
+  color: 'red',
+  model: 'k3',
+  price: '1억'
+}
+
+// 숙제2
+type typeChanger<T, ChangeTo> = {
+  [key in keyof T]: ChangeTo;
+}
+
+
+// --------------- 조건문으로 타입만들기 & infer ---------------------
+// 조건부로 타입 만들기
+
+// infer: 조건문에서 쓸 수 있는 키워드로 type을 뽑는 역할을 함
+
+type FirstItem<T> = T extends any[]? T[0] : any;
+
+// 숙제1
+type Age99<T> = T extends [string, ...any]? T[0]:unknown; 
+
+let age1 :Age99<[string, number]>;
+let age2 :Age99<[boolean, number]>;
+
+// 숙제2
+
+type 타입뽑기<T> = T extends ((x: infer R) => void)? R: any
+
+type 타입1 = 타입뽑기<(x :number) => void> //이러면 number가 이 자리에 남음
+type 타입2 = 타입뽑기<(x :string) => void> //이러면 string이 이 자리에 남음
